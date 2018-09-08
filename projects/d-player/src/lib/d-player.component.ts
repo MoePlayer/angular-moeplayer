@@ -1,11 +1,12 @@
-import { Component, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { DPlayerService } from './d-player.service';
 import Hls from 'hls.js';
 import { MediaPlayerClass } from 'dashjs';
-import {
+import DPlayer, {
   DPlayerAPIBackend,
   DPlayerContextMenuItem,
   DPlayerDanmaku,
+  DPlayerEvents,
   DPlayerHighLightItem,
   DPlayerSubTitle,
   DPlayerVideo,
@@ -18,6 +19,10 @@ import {
   template: ''
 })
 export class DPlayerComponent implements OnInit, OnDestroy {
+  /**
+   * Player Options Attribute
+   * @property {any}
+   */
   @Input() private autoplay: boolean;
   @Input() private live: boolean;
   @Input() private theme: string;
@@ -34,8 +39,25 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   @Input() private contextmenu: DPlayerContextMenuItem[];
   @Input() private highlight: DPlayerHighLightItem[];
   @Input() private apiBackend: DPlayerAPIBackend;
+  /**
+   * Player ID
+   * @property {number}
+   */
   public PID = -1;
+  /**
+   * Player Instance
+   * @property {DPlayer}
+   */
+  public PLAYER: DPlayer = null;
+  /**
+   * Media Source Extensions
+   * @property {any}
+   */
   public MSE: { type: string, instance: any }[] = [];
+  /**
+   * Player Events Reflection
+   * @property {any}
+   */
   public events = {
     playerEvents: [
       'screenshot',
@@ -92,7 +114,61 @@ export class DPlayerComponent implements OnInit, OnDestroy {
 
   [key: string]: any;
 
-  // @Output('event') private event;
+  /**
+   * Player Events
+   * @property {EventEmitter}
+   */
+  @Output() private screenshotChange: EventEmitter<void> = new EventEmitter;
+  @Output() private thumbnails_show: EventEmitter<void> = new EventEmitter;
+  @Output() private thumbnails_hide: EventEmitter<void> = new EventEmitter;
+  @Output() private danmaku_show: EventEmitter<void> = new EventEmitter;
+  @Output() private danmaku_hide: EventEmitter<void> = new EventEmitter;
+  @Output() private danmaku_clear: EventEmitter<void> = new EventEmitter;
+  @Output() private danmaku_loaded: EventEmitter<void> = new EventEmitter;
+  @Output() private danmaku_send: EventEmitter<void> = new EventEmitter;
+  @Output() private danmaku_opacity: EventEmitter<void> = new EventEmitter;
+  @Output() private contextmenu_show: EventEmitter<void> = new EventEmitter;
+  @Output() private contextmenu_hide: EventEmitter<void> = new EventEmitter;
+  @Output() private notice_show: EventEmitter<void> = new EventEmitter;
+  @Output() private notice_hide: EventEmitter<void> = new EventEmitter;
+  @Output() private quality_start: EventEmitter<void> = new EventEmitter;
+  @Output() private quality_end: EventEmitter<void> = new EventEmitter;
+  @Output() private destroy: EventEmitter<void> = new EventEmitter;
+  @Output() private resize: EventEmitter<void> = new EventEmitter;
+  @Output() private fullscreen: EventEmitter<void> = new EventEmitter;
+  @Output() private fullscreen_cancel: EventEmitter<void> = new EventEmitter;
+  @Output() private webfullscreen: EventEmitter<void> = new EventEmitter;
+  @Output() private webfullscreen_cancel: EventEmitter<void> = new EventEmitter;
+  @Output() private subtitle_show: EventEmitter<void> = new EventEmitter;
+  @Output() private subtitle_hide: EventEmitter<void> = new EventEmitter;
+  @Output() private subtitle_change: EventEmitter<void> = new EventEmitter;
+  /**
+   * Video Events
+   * @property {EventEmitter}
+   */
+  @Output() private abort: EventEmitter<void> = new EventEmitter;
+  @Output() private canplay: EventEmitter<void> = new EventEmitter;
+  @Output() private canplaythrough: EventEmitter<void> = new EventEmitter;
+  @Output() private durationchange: EventEmitter<void> = new EventEmitter;
+  @Output() private emptied: EventEmitter<void> = new EventEmitter;
+  @Output() private ended: EventEmitter<void> = new EventEmitter;
+  @Output() private error: EventEmitter<void> = new EventEmitter;
+  @Output() private loadeddata: EventEmitter<void> = new EventEmitter;
+  @Output() private loadedmetadata: EventEmitter<void> = new EventEmitter;
+  @Output() private loadstart: EventEmitter<void> = new EventEmitter;
+  @Output() private mozaudioavailable: EventEmitter<void> = new EventEmitter;
+  @Output() private pause: EventEmitter<void> = new EventEmitter;
+  @Output() private play: EventEmitter<void> = new EventEmitter;
+  @Output() private playing: EventEmitter<void> = new EventEmitter;
+  @Output() private progress: EventEmitter<void> = new EventEmitter;
+  @Output() private ratechange: EventEmitter<void> = new EventEmitter;
+  @Output() private seeked: EventEmitter<void> = new EventEmitter;
+  @Output() private seeking: EventEmitter<void> = new EventEmitter;
+  @Output() private stalled: EventEmitter<void> = new EventEmitter;
+  @Output() private suspend: EventEmitter<void> = new EventEmitter;
+  @Output() private timeupdate: EventEmitter<void> = new EventEmitter;
+  @Output() private volumeChange: EventEmitter<void> = new EventEmitter;
+  @Output() private waitin: EventEmitter<void> = new EventEmitter;
 
   constructor(
     private ElemRef: ElementRef,
@@ -137,7 +213,7 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   }
 
   private initPlayer() {
-    const _dp = this.DPService
+    this.PLAYER = this.DPService
       .setOptions({
         container: this.ElemRef.nativeElement,
         autoplay: this.autoplay,
@@ -158,13 +234,22 @@ export class DPlayerComponent implements OnInit, OnDestroy {
         apiBackend: this.apiBackend,
       })
       .createPlayer();
-    const _proto = Object.getPrototypeOf(_dp);
-    _proto.play = _dp.play.bind(_dp);
+    Object.keys(this.PLAYER.events).forEach((item) => {
+      if (item !== 'events') {
+        this.PLAYER.events[item].forEach((event: DPlayerEvents) => {
+          this.PLAYER.on(event, () => this[event] ? this[event].emit() : null);
+        });
+      }
+    });
+    const _proto = Object.assign(Object.getPrototypeOf(this), Object.getPrototypeOf(this.PLAYER));
+    _proto.play = this.PLAYER.play.bind(this.PLAYER);
     Object.setPrototypeOf(this, _proto);
-    Object.assign(this, _dp);
+    Object.keys(this.PLAYER).forEach(key => {
+      this[key] = this.PLAYER[key];
+    });
   }
 
   ngOnDestroy() {
-    this.DPService.destroyPlayer(this.PID);
+    this.DPService.destroyPlayer(this.PLAYER);
   }
 }

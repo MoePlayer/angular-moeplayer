@@ -1,3 +1,12 @@
+<button (click)="type = !type">Change Player Type</button>
 <d-player
+  *ngIf="type"
   dpHls
-  [video]="{url: '//video-dev.github.io/streams/x36xhzz/url_0/193039199_mp4_h264_aac_hd_7.m3u8'}"></d-player>
+  (resize)="resize()"
+  [video]="{url: 'https://video-dev.github.io/streams/x36xhzz/url_0/193039199_mp4_h264_aac_hd_7.m3u8'}"></d-player>
+<d-player
+  *ngIf="!type"
+  dpDash
+  (canplay)="canplay()"
+  [video]="{url: 'https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd'}"></d-player>
+<p *ngFor="let event of eventLog">{{ event }}</p>

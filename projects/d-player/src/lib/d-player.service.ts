@@ -45,16 +45,27 @@ export class DPlayerService {
     }
   }
 
-  destroyPlayer(id?: number): void {
-    if (Number.isInteger(id)) {
+  destroyPlayer(p?: any): void {
+    let _dp = null;
+    if (Number.isInteger(p)) {
       try {
-        const _dp = this._dp.find((_) => {
-          return id === _.id;
+        _dp = this._dp.find((_) => {
+          return p === _.id;
         });
         _dp.dp.destroy();
         this._dp.splice(this._dp.indexOf(_dp), 1);
       } catch (e) {
         console.warn('dplayer destroy failed');
+      }
+    } else if (p instanceof DPlayer) {
+      try {
+        p.destroy();
+        _dp = this._dp.find((_) => {
+          return p === _.dp;
+        });
+        this._dp.splice(this._dp.indexOf(_dp), 1);
+      } catch (e) {
+        console.warn('dplayers destroy failed');
       }
     } else {
       this._dp.forEach((_, i, a) => {

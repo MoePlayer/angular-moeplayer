@@ -7,8 +7,19 @@ import { DPlayerService } from 'angular-dplayer';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  public type = true;
+  public eventLog = [];
+
   constructor(
     private DPService: DPlayerService
   ) {
+  }
+
+  resize() {
+    this.eventLog.push('resize');
+  }
+
+  canplay() {
+    this.eventLog.push('canplay');
   }
 }
