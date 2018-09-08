@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import DPlayer, { DPlayerOptions } from 'dplayer';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DPlayerService {
   private _ids: number;
   private readonly _dp: {

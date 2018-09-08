@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { DPlayerModule } from '../../projects/d-player/src/lib/d-player.module';
+import { DPlayerModule } from 'd-player';
 
 @NgModule({
   declarations: [
