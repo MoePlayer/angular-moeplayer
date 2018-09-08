@@ -13,7 +13,7 @@ import {
 } from 'dplayer';
 
 @Component({
-  selector: 'moe-d-player',
+  selector: 'd-player',
   styles: [':host{display:block} :host ::ng-deep a{text-decoration:none}'],
   template: ''
 })

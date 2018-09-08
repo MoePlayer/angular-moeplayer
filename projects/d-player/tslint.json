@@ -10,7 +10,7 @@
         "component-selector": [
             true,
             "element",
-            "moe",
+            "d",
             "kebab-case"
         ]
     }

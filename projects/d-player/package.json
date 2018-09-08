@@ -1,6 +1,27 @@
 {
-  "name": "d-player",
-  "version": "0.0.1",
+  "name": "angular-dplayer",
+  "version": "1.0.3",
+  "description": "DPlayer for Angular",
+  "keywords": [
+    "angular",
+    "typescript",
+    "component",
+    "player"
+  ],
+  "author": {
+    "name": "Guanyunhan",
+    "email": "guanyinhang@gmail.com",
+    "url": "https://1996.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoePlayer/angular-moeplayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MoePlayer/angular-moeplayer/issues"
+  },
+  "homepage": "https://github.com/MoePlayer/angular-moeplayer",
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
     "@angular/core": "^6.0.0-rc.0 || ^6.0.0",

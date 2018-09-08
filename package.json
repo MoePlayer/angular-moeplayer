@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
+    "angular-dplayer": "file:dist/d-player",
     "core-js": "^2.5.4",
     "d-player": "file:dist/d-player",
     "dashjs": "^2.9.0",
