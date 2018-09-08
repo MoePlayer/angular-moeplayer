@@ -1,27 +1,107 @@
-# AngularMoeplayer
+<p align="center">
+  <img src="https://i.imgur.com/Ku8opUv.png" width="100">
+</p>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.5.
+[![npm](https://img.shields.io/npm/v/angular-dplayer.svg)](https://www.npmjs.com/package/angular-dplayer)
+[![npm](https://img.shields.io/npm/l/angular-dplayer.svg)](https://github.com/MoePlayer/angular-moeplayer/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/dt/angular-dplayer.svg)](https://www.npmjs.com/package/angular-dplayer)
 
-## Development server
+# Angular-DPlayer
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+> An Angular 6.x video player component based on [DPlayer](https://github.com/DIYgod/DPlayer).
 
-## Code scaffolding
+## Install
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+npm install angular-dplayer --save
+```
 
-## Build
+## @Component
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Example Browser App Usage
 
-## Running unit tests
+>style.css
+```css
+@import "~dplayer/dist/DPlayer.min.css";
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+> app.module.ts
+```typescript
+import { DPlayerModule } from 'angular-dplayer';
 
-## Running end-to-end tests
+@NgModule({
+  imports: [
+    DPlayerModule
+  ]
+})
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+> app.component.ts
+```typescript
+import { Component } from '@angular/core';
+import { DPlayerService } from 'angular-dplayer';
 
-## Further help
+@Component({
+  selector: 'app-root',
+  template: `<d-player preload="auto" [video]="{url: ''}" [(volume)]="volume" (resize)="onResize()"></d-player>`
+})
+export class AppComponent {
+  constructor(
+    private DPService: DPlayerService
+  ) {
+  }
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+  onResize() {
+    console.log('resize');
+  }
+}
+
+```
+
+Advanced Usage
+
+> enable hls or dash suppot by directive
+
+```angular2html
+<d-player dpHls [video]="{url: ''}"></d-player>
+```
+
+> control video status
+
+```typescript
+import { Component } from '@angular/core';
+import { DPlayerService } from 'angular-dplayer';
+
+@Component({
+  selector: 'app-root',
+  template: `<d-player #player [video]="{url: ''}" (resize)="onResize(player)"></d-player>`
+})
+export class AppComponent {
+  constructor(
+    private DPService: DPlayerService
+  ) {
+  }
+
+  onResize(player) {
+    player.pause();
+  }
+}
+```
+
+## Options
+[DPlayer Options Doc](http://dplayer.js.org/#/home?id=options)
+
+## Events
+[DPlayer Events Doc](http://dplayer.js.org/#/home?id=event-binding)
+
+## API
+[APIs](http://dplayer.js.org/#/home?id=api)
+
+## Related
+- [DPlayer](https://github.com/DIYgod/DPlayer)
+- [vue-dplayer](https://github.com/MoePlayer/vue-dplayer)
+- [react-dplayer](https://github.com/MoePlayer/react-dplayer)
+
+# License
+
+This content is released under the [MIT](http://opensource.org/licenses/MIT) License.

@@ -1,6 +1,7 @@
 {
   "name": "angular-dplayer",
   "version": "1.0.3",
+  "private": false,
   "description": "DPlayer for Angular",
   "keywords": [
     "angular",
