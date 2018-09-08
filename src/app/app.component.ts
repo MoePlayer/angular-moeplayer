@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DPlayerService } from '../../projects/d-player/src/lib/d-player.service';
+import { DPlayerService } from 'angular-dplayer';
 
 @Component({
   selector: 'app-root',
