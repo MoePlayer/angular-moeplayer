@@ -18,9 +18,9 @@ npm install angular-dplayer --save
 
 ## @Component
 
-Example Browser App Usage
+#### Example Browser App Usage
 
->style.css
+> style.css
 ```css
 @import "~dplayer/dist/DPlayer.min.css";
 ```
@@ -43,7 +43,7 @@ import { DPlayerService } from 'angular-dplayer';
 
 @Component({
   selector: 'app-root',
-  template: `<d-player preload="auto" [video]="{url: ''}" [(volume)]="volume" (resize)="onResize()"></d-player>`
+  template: `<d-player preload="auto" [video]="{url: 'http://example.com/video.mp4'}" [(volume)]="volume" (resize)="onResize()"></d-player>`
 })
 export class AppComponent {
   constructor(
@@ -58,18 +58,24 @@ export class AppComponent {
 
 ```
 
-Advanced Usage
+#### Attribute Like A Native Video Element
+
+```angular2html
+<d-player src="http://example.com/video.webm" poster="http://example.com/poster.jpg"></d-player>
+```
+
+#### Advanced Usage
 
 > enable hls or dash suppot by directive
 
 ```angular2html
-<d-player dpHls [video]="{url: ''}"></d-player>
+<d-player dpHls [video]="{url: 'http://example.com/video.m3u8'}"></d-player>
 ```
 
 > FLV Live Stream
 
 ```angular2html
-<d-player dpFlv [live]="true" [video]="{url: ''}"></d-player>
+<d-player dpFlv [live]="true" [video]="{url: 'http://example.com/video.flv'}"></d-player>
 ```
 
 > control video status
@@ -80,7 +86,7 @@ import { DPlayerService } from 'angular-dplayer';
 
 @Component({
   selector: 'app-root',
-  template: `<d-player #player [video]="{url: ''}" (resize)="onResize(player)"></d-player>`
+  template: `<d-player #player [video]="{url: 'http://example.com/video.mp4'}" (resize)="onResize(player)"></d-player>`
 })
 export class AppComponent {
   constructor(
