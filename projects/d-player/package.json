@@ -28,6 +28,7 @@
     "@types/hls.js": "^0.10.1",
     "dashjs": "^2.9.0",
     "dplayer": "^1.24.0",
+    "flv.js": "^1.4.2",
     "hls.js": "^0.11.0"
   },
   "peerDependencies": {

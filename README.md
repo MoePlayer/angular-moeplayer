@@ -66,6 +66,12 @@ Advanced Usage
 <d-player dpHls [video]="{url: ''}"></d-player>
 ```
 
+> FLV Live Stream
+
+```angular2html
+<d-player dpFlv [live]="true" [video]="{url: ''}"></d-player>
+```
+
 > control video status
 
 ```typescript
