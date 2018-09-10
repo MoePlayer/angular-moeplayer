@@ -13,6 +13,7 @@ export class DashDirective implements OnDestroy {
   ) {
     try {
       this._instance = MediaPlayer().create();
+      this._instance.getDebug().setLogToBrowserConsole(false);
     } catch (e) {
       console.warn('dash.js init failed');
     }
