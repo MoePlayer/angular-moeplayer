@@ -1,7 +1,5 @@
 import { Component, ElementRef, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { DPlayerService } from './d-player.service';
-import Hls from 'hls.js';
-import { MediaPlayerClass } from 'dashjs';
 import DPlayer, {
   DPlayerAPIBackend,
   DPlayerContextMenuItem,
@@ -184,26 +182,40 @@ export class DPlayerComponent implements OnInit, OnDestroy {
 
   private initCustomType() {
     this.MSE.forEach(mse => {
+      const instance = mse.instance;
       switch (mse.type) {
         case 'hls':
-          const hls = mse.instance as Hls;
           this.video = Object.assign(this.video, {
             type: 'dpHls',
             customType: {
               'dpHls': (video: HTMLVideoElement) => {
-                hls.loadSource(video.src);
-                hls.attachMedia(video);
+                instance.loadSource(video.src);
+                instance.attachMedia(video);
               }
             }
           });
           break;
         case 'dash':
-          const dash = mse.instance as MediaPlayerClass;
           this.video = Object.assign(this.video, {
             type: 'dpDash',
             customType: {
               'dpDash': (video: HTMLVideoElement) => {
-                dash.initialize(video, video.src);
+                instance.initialize(video, video.src);
+              }
+            }
+          });
+          break;
+        case 'flv':
+          this.video = Object.assign(this.video, {
+            type: 'dpFlv',
+            customType: {
+              'dpFlv': (video: HTMLVideoElement) => {
+                instance._mediaDataSource.url = video.src;
+                if (this.live) {
+                  instance._config.isLive = true;
+                }
+                instance.attachMediaElement(video);
+                instance.load();
               }
             }
           });

@@ -7,12 +7,13 @@ import { DPlayerService } from 'angular-dplayer';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public type = true;
+  public type: number;
   public eventLog = [];
 
   constructor(
     private DPService: DPlayerService
   ) {
+    this.type = 0;
   }
 
   resize() {
@@ -21,5 +22,9 @@ export class AppComponent {
 
   canplay() {
     this.eventLog.push('canplay');
+  }
+
+  changeType(type: number) {
+    this.type = type;
   }
 }

@@ -1,12 +1,18 @@
-<button (click)="type = !type">Change Player Type</button>
+<button (click)="changeType(1)">Hls</button>
+<button (click)="changeType(2)">Dash</button>
+<button (click)="changeType(3)">Flv</button>
+<p *ngFor="let event of eventLog">{{ event }}</p>
 <d-player
-  *ngIf="type"
+  *ngIf="type === 1"
   dpHls
   (resize)="resize()"
   [video]="{url: 'https://video-dev.github.io/streams/x36xhzz/url_0/193039199_mp4_h264_aac_hd_7.m3u8'}"></d-player>
 <d-player
-  *ngIf="!type"
+  *ngIf="type === 2"
   dpDash
   (canplay)="canplay()"
   [video]="{url: 'https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd'}"></d-player>
-<p *ngFor="let event of eventLog">{{ event }}</p>
+<d-player
+  *ngIf="type === 3"
+  dpFlv
+  [video]="{url: 'https://mister-ben.github.io/videojs-flvjs/bbb.flv'}"></d-player>
