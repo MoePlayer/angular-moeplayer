@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { DPlayerService } from './d-player.service';
+import { DPlayerApiService } from './d-player-api.service';
 import { Util } from '../util';
 import DPlayer, {
   DPlayerAPIBackend,
@@ -27,7 +28,10 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   private _hotkey = true;
   private _preload: Preload = 'metadata';
   private _volume = 0.7;
-  private _apiBackend: {};
+  private _apiBackend: DPlayerAPIBackend = {
+    send: this.APIService.sendDanmaku.bind(this.APIService),
+    read: this.APIService.readDanmaku.bind(this.APIService)
+  };
   private _video: DPlayerVideo = {
     url: '',
     type: 'auto'
@@ -114,6 +118,14 @@ export class DPlayerComponent implements OnInit, OnDestroy {
     return this._volume;
   }
 
+  @Input() set apiBackend(value: DPlayerAPIBackend) {
+    this._apiBackend = value;
+  }
+
+  get apiBackend(): DPlayerAPIBackend {
+    return this._apiBackend;
+  }
+
   @Input() set mutex(value: boolean) {
     this._mutex = Util.toBoolean(value);
   }
@@ -178,7 +190,6 @@ export class DPlayerComponent implements OnInit, OnDestroy {
     return this._highlight;
   }
 
-  @Input() private apiBackend: DPlayerAPIBackend;
   /**
    * Player ID
    * @property {number}
@@ -312,7 +323,8 @@ export class DPlayerComponent implements OnInit, OnDestroy {
 
   constructor(
     private ElemRef: ElementRef,
-    private DPService: DPlayerService
+    private DPService: DPlayerService,
+    private APIService: DPlayerApiService
   ) {
   }
 
