@@ -1,6 +1,7 @@
 <button (click)="changeType(1)">Hls</button>
 <button (click)="changeType(2)">Dash</button>
 <button (click)="changeType(3)">Flv</button>
+<button (click)="changeType(4)">MP4</button>
 <p *ngFor="let event of eventLog">{{ event }}</p>
 <d-player
   *ngIf="type === 1"
@@ -16,3 +17,10 @@
   *ngIf="type === 3"
   dpFlv
   [video]="{url: 'https://mister-ben.github.io/videojs-flvjs/bbb.flv'}"></d-player>
+<d-player
+  *ngIf="type === 4"
+  screenshot="true"
+  src="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4"
+  poster="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.png"
+  [subtitle]="{url: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.vtt'}"
+  [danmaku]="{id: 'demo', api: 'https://api.prprpr.me/dplayer3/'}"></d-player>
