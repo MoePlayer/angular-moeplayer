@@ -1,118 +1,95 @@
 import { Injectable } from '@angular/core';
 import DPlayer, { DPlayerOptions } from 'dplayer';
+import { Util } from '../util';
+import { Observable, from, of } from 'rxjs';
+import { filter, mapTo, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DPlayerService {
-  private _ids: number;
+  private _pid = -0x1;
+  public set pid(id: number) {
+    this._pid = id;
+  }
+
+  public get pid(): number {
+    return this._pid;
+  }
+
   private readonly _dp: {
     id: number,
     dp: DPlayer
-  }[];
-  private readonly _dpOptions: {
-    id: number,
-    op: DPlayerOptions
-  }[];
-
-  constructor() {
-    this._ids = -1;
-    this._dp = [];
-    this._dpOptions = [];
-  }
-
-  setOptions(options: DPlayerOptions): DPlayerService {
-    this._dpOptions.push({
-      id: ++this._ids,
-      op: this.safeSet(options)
+  }[] = [];
+  public set dp(_p: DPlayer) {
+    this._dp.push({
+      id: this.pid,
+      dp: _p
     });
-    return this;
   }
 
-  createPlayer(): DPlayer {
-    const ref = this._dpOptions.find(_ => {
-      return _.id === this._ids;
-    });
-    try {
-      const _dp = new DPlayer(<DPlayerOptions>ref.op);
-      this._dp.push({
-        id: this._ids,
-        dp: _dp
-      });
-      return _dp;
-    } catch (e) {
-      console.warn('dplayer init failed');
-    }
-  }
-
-  destroyPlayer(p?: any): void {
-    let _dp = null;
-    if (Number.isInteger(p)) {
-      try {
-        _dp = this._dp.find((_) => {
-          return p === _.id;
-        });
-        _dp.dp.destroy();
-        this._dp.splice(this._dp.indexOf(_dp), 1);
-      } catch (e) {
-        console.warn('dplayer destroy failed');
-      }
-    } else if (p instanceof DPlayer) {
-      try {
-        p.destroy();
-        _dp = this._dp.find((_) => {
-          return p === _.dp;
-        });
-        this._dp.splice(this._dp.indexOf(_dp), 1);
-      } catch (e) {
-        console.warn('dplayers destroy failed');
-      }
-    } else {
-      this._dp.forEach((_, i, a) => {
-        try {
-          _.dp.destroy();
-          a.splice(i, 1);
-        } catch (e) {
-          console.warn('dplayers destroy failed');
-        }
-      });
-    }
-  }
-
-  getInstance(id?: number): DPlayer {
-    let _id = -1;
-    if (Number.isInteger(id)) {
-      _id = id;
-    } else {
-      _id = this._ids;
-    }
-    return this._dp.find(_ => {
-      return _id === _.id;
+  public get dp(): DPlayer {
+    return this._dp.find(_p => {
+      return this.pid === _p.id;
     }).dp;
   }
 
-  getPID(): number {
-    return this._ids;
+  private readonly _dpOptions: {
+    id: number,
+    op: DPlayerOptions
+  }[] = [];
+  public set dpOptions(_o: DPlayerOptions) {
+    this._dpOptions.push({
+      id: ++this.pid,
+      op: Util.safeSet(_o)
+    });
   }
 
-  getOptions(id?: number): DPlayerOptions {
-    let _id = -1;
-    if (Number.isInteger(id)) {
-      _id = id;
-    } else {
-      _id = this._ids;
-    }
-    return this._dpOptions.find(_ => {
-      return _id === _.id;
+  public get dpOptions(): DPlayerOptions {
+    return this._dpOptions.find(_o => {
+      return this.pid === _o.id;
     }).op;
   }
 
-  private safeSet(obj: any): any {
-    Object.keys(obj).forEach(key => {
-      if (typeof obj[key] === 'undefined') {
-        delete obj[key];
-      }
-    });
-    return obj;
+  constructor() {
+  }
+
+  createPlayer(): Observable<DPlayer> {
+    return of(this.dpOptions)
+      .pipe(
+        switchMap(_o => of(new DPlayer(<DPlayerOptions>_o)))
+      )
+      .pipe(
+        tap(_dp => {
+          this.dp = _dp;
+        })
+      );
+  }
+
+  destroyPlayer(p?: any): Observable<number> {
+    return from(this._dp)
+      .pipe(
+        filter(_p => _p.dp === p)
+      )
+      .pipe(
+        tap(_p => _p.dp.destroy()),
+        switchMap(_p => of(this._dp.indexOf(_p)))
+      )
+      .pipe(
+        tap(_i => this._dp.splice(_i, 1)),
+        mapTo(this.pid)
+      );
+  }
+
+  findInstance(id: number): DPlayer {
+    return this._dp.find(_p => {
+      return id === _p.id;
+    }).dp;
+  }
+
+  findOptions(id: number): DPlayerOptions {
+    return this._dpOptions.find(_o => {
+      return id === _o.id;
+    }).op;
   }
 }

@@ -12,6 +12,7 @@ import DPlayer, {
   DPlayerVideo,
   Preload
 } from 'dplayer';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'd-player',
@@ -331,7 +332,7 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initCustomType();
     this.initPlayer();
-    this.PID = this.DPService.getPID();
+    this.PID = this.DPService.pid;
   }
 
   private initCustomType() {
@@ -379,42 +380,51 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   }
 
   private initPlayer() {
-    this.PLAYER = this.DPService
-      .setOptions({
-        container: this.ElemRef.nativeElement,
-        autoplay: this.autoplay,
-        live: this.live,
-        theme: this.theme,
-        loop: this.loop,
-        screenshot: this.screenshot,
-        hotkey: this.hotkey,
-        preload: this.preload,
-        volume: this.volume,
-        mutex: this.mutex,
-        video: this.video,
-        subtitle: this.subtitle,
-        danmaku: this.danmaku,
-        contextmenu: this.contextmenu,
-        highlight: this.highlight,
-        apiBackend: this.apiBackend,
-      })
-      .createPlayer();
-    Object.keys(this.PLAYER.events).forEach((item) => {
-      if (item !== 'events') {
-        this.PLAYER.events[item].forEach((event: DPlayerEvents) => {
-          this.PLAYER.on(event, () => this[event] ? this[event].emit() : null);
-        });
-      }
-    });
-    const _proto = Object.assign(Object.getPrototypeOf(this), Object.getPrototypeOf(this.PLAYER));
-    _proto.play = this.PLAYER.play.bind(this.PLAYER);
-    Object.setPrototypeOf(this, _proto);
-    Object.keys(this.PLAYER).forEach(key => {
-      this[key] = this.PLAYER[key];
-    });
+    this.DPService.dpOptions = {
+      container: this.ElemRef.nativeElement,
+      autoplay: this.autoplay,
+      live: this.live,
+      theme: this.theme,
+      loop: this.loop,
+      screenshot: this.screenshot,
+      hotkey: this.hotkey,
+      preload: this.preload,
+      volume: this.volume,
+      mutex: this.mutex,
+      video: this.video,
+      subtitle: this.subtitle,
+      danmaku: this.danmaku,
+      contextmenu: this.contextmenu,
+      highlight: this.highlight,
+      apiBackend: this.apiBackend,
+    };
+    this.DPService.createPlayer()
+      .pipe(
+        tap(_dp => {
+          Object.keys(_dp.events).forEach((item) => {
+            if (item !== 'events') {
+              _dp.events[item].forEach((event: DPlayerEvents) => {
+                if (this[event]) {
+                  _dp.on(event, () => this[event].emit());
+                }
+              });
+            }
+          });
+          const _proto = Object.assign(Object.getPrototypeOf(this), Object.getPrototypeOf(_dp));
+          _proto.play = _dp.play.bind(_dp);
+          Object.setPrototypeOf(this, _proto);
+          Object.keys(_dp).forEach(key => {
+            this[key] = _dp[key];
+          });
+        })
+      )
+      .subscribe(_dp => this.PLAYER = _dp, () => console.warn('initialization error'))
+      .unsubscribe();
   }
 
   ngOnDestroy() {
-    this.DPService.destroyPlayer(this.PLAYER);
+    this.DPService.destroyPlayer(this.PLAYER)
+      .subscribe()
+      .unsubscribe();
   }
 }

@@ -17,7 +17,7 @@ export class DPlayerApiService {
       .post(options.url, options.data)
       .pipe(
         tap((data: any) => {
-          if (!data || data.code !== 0) {
+          if (data.code !== 0) {
             throwError(data.msg);
           }
         }),
@@ -31,7 +31,7 @@ export class DPlayerApiService {
       .get(options.url)
       .pipe(
         tap((data: any) => {
-          if (!data || data.code !== 0) {
+          if (data.code !== 0) {
             throwError(data.msg);
           }
         }),
