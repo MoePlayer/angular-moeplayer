@@ -30,24 +30,12 @@ export class DPlayerComponent implements OnInit, OnDestroy {
    * @property {any}
    */
   private _options: any = {
-    live: false,
-    autoplay: false,
-    theme: '#b7daff',
-    loop: false,
-    screenshot: false,
-    hotkey: true,
-    preload: 'metadata',
-    volume: 0.7,
+    container: null,
+    video: {},
     apiBackend: {
       send: this.APIService.sendDanmaku.bind(this.APIService),
       read: this.APIService.readDanmaku.bind(this.APIService)
-    },
-    video: {},
-    contextmenu: [],
-    mutex: true,
-    subtitle: {},
-    danmaku: {},
-    highlight: []
+    }
   };
 
   /**

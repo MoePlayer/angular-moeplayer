@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
 import DPlayer, { DPlayerOptions } from 'dplayer';
 import { Util } from '../util';
 import { Observable, from, of } from 'rxjs';
-import { filter, mapTo, switchMap, tap } from 'rxjs/operators';
+import { filter, mapTo, mergeMap, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -51,12 +51,15 @@ export class DPlayerService {
     }).op;
   }
 
-  constructor() {
+  constructor(
+    @Optional() @Inject('config') private config: any
+  ) {
   }
 
   createPlayer(): Observable<DPlayer> {
     return of(this.dpOptions)
       .pipe(
+        mergeMap(_o => of(this.config ? Object.assign(this.config, _o) : _o)),
         switchMap(_o => of(new DPlayer(_o)))
       )
       .pipe(

@@ -10,7 +10,10 @@ import { DPlayerModule } from 'angular-dplayer';
   ],
   imports: [
     BrowserModule,
-    DPlayerModule
+    DPlayerModule.forRoot({
+      autoplay: true,
+      screenshot: true
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
