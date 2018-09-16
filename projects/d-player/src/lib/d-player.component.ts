@@ -17,178 +17,185 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'd-player',
   styles: [':host{display:block} :host ::ng-deep a{text-decoration:none}'],
-  template: ''
+  template: '{{ MESSAGE }}'
 })
 export class DPlayerComponent implements OnInit, OnDestroy {
-  private _live = false;
-  private _autoplay = false;
-  private _theme = '#b7daff';
-  private _loop = false;
-  private _lang: string;
-  private _screenshot = false;
-  private _hotkey = true;
-  private _preload: Preload = 'metadata';
-  private _volume = 0.7;
-  private _apiBackend: DPlayerAPIBackend = {
-    send: this.APIService.sendDanmaku.bind(this.APIService),
-    read: this.APIService.readDanmaku.bind(this.APIService)
+  /**
+   * Player Info
+   * @property {string}
+   */
+  public MESSAGE = '';
+  /**
+   * Player Options
+   * @property {any}
+   */
+  private _options: any = {
+    live: false,
+    autoplay: false,
+    theme: '#b7daff',
+    loop: false,
+    screenshot: false,
+    hotkey: true,
+    preload: 'metadata',
+    volume: 0.7,
+    apiBackend: {
+      send: this.APIService.sendDanmaku.bind(this.APIService),
+      read: this.APIService.readDanmaku.bind(this.APIService)
+    },
+    video: {},
+    contextmenu: [],
+    mutex: true,
+    subtitle: {},
+    danmaku: {},
+    highlight: []
   };
-  private _video: DPlayerVideo = {
-    url: '',
-    type: 'auto'
-  };
-  private _contextmenu: DPlayerContextMenuItem[];
-  private _mutex = true;
-  private _subtitle: DPlayerSubTitle;
-  private _danmaku: DPlayerDanmaku;
-  private _highlight: DPlayerHighLightItem[];
 
   /**
    * Player Options Attribute
    * @property {any}
    */
   @Input() set live(value: boolean) {
-    this._live = Util.toBoolean(value);
+    this._options.live = Util.toBoolean(value);
   }
 
   get live(): boolean {
-    return this._live;
+    return this._options.live;
   }
 
   @Input() set autoplay(value: boolean) {
-    this._autoplay = Util.toBoolean(value);
+    this._options.autoplay = Util.toBoolean(value);
   }
 
   get autoplay(): boolean {
-    return this._autoplay;
+    return this._options.autoplay;
   }
 
   @Input() set theme(value: string) {
-    this._theme = value;
+    this._options.theme = value;
   }
 
   get theme(): string {
-    return this._theme;
+    return this._options.theme;
   }
 
   @Input() set loop(value: boolean) {
-    this._loop = Util.toBoolean(value);
+    this._options.loop = Util.toBoolean(value);
   }
 
   get loop(): boolean {
-    return this._loop;
+    return this._options.loop;
   }
 
   @Input() set lang(value: string) {
-    this._lang = String(value);
+    this._options.lang = String(value);
   }
 
   get lang(): string {
-    return this._lang;
+    return this._options.lang;
   }
 
   @Input() set screenshot(value: boolean) {
-    this._screenshot = Util.toBoolean(value);
+    this._options.screenshot = Util.toBoolean(value);
   }
 
   get screenshot(): boolean {
-    return this._screenshot;
+    return this._options.screenshot;
   }
 
   @Input() set hotkey(value: boolean) {
-    this._hotkey = Util.toBoolean(value);
+    this._options.hotkey = Util.toBoolean(value);
   }
 
   get hotkey(): boolean {
-    return this._hotkey;
+    return this._options.hotkey;
   }
 
   @Input() set preload(value: Preload) {
-    this._preload = value;
+    this._options.preload = value;
   }
 
   get preload(): Preload {
-    return this._preload;
+    return this._options.preload;
   }
 
   @Input() set volume(value: number) {
-    this._volume = Util.toNumber(value, null);
+    this._options.volume = Util.toNumber(value, null);
   }
 
   get volume(): number {
-    return this._volume;
+    return this._options.volume;
   }
 
   @Input() set apiBackend(value: DPlayerAPIBackend) {
-    this._apiBackend = value;
+    this._options.apiBackend = value;
   }
 
   get apiBackend(): DPlayerAPIBackend {
-    return this._apiBackend;
+    return this._options.apiBackend;
   }
 
   @Input() set mutex(value: boolean) {
-    this._mutex = Util.toBoolean(value);
+    this._options.mutex = Util.toBoolean(value);
   }
 
   get mutex(): boolean {
-    return this._mutex;
+    return this._options.mutex;
   }
 
   @Input() set video(value: DPlayerVideo) {
-    this._video = value;
+    this._options.video = value;
   }
 
   get video(): DPlayerVideo {
-    return this._video;
+    return this._options.video;
   }
 
   @Input() set contextmenu(value: DPlayerContextMenuItem[]) {
-    this._contextmenu = value;
+    this._options.contextmenu = value;
   }
 
   get contextmenu(): DPlayerContextMenuItem[] {
-    return this._contextmenu;
+    return this._options.contextmenu;
   }
 
   @Input() set src(value: string) {
-    this._video.url = String(value);
+    this._options.video.url = String(value);
   }
 
   get src(): string {
-    return this._video.url;
+    return this._options.video.url;
   }
 
   @Input() set poster(value: string) {
-    this._video.pic = String(value);
+    this._options.video.pic = String(value);
   }
 
   get poster(): string {
-    return this._video.pic;
+    return this._options.video.pic;
   }
 
   @Input() set subtitle(value: DPlayerSubTitle) {
-    this._subtitle = value;
+    this._options.subtitle = value;
   }
 
   get subtitle(): DPlayerSubTitle {
-    return this._subtitle;
+    return this._options.subtitle;
   }
 
   @Input() set danmaku(value: DPlayerDanmaku) {
-    this._danmaku = value;
+    this._options.danmaku = value;
   }
 
   get danmaku(): DPlayerDanmaku {
-    return this._danmaku;
+    return this._options.danmaku;
   }
 
   @Input() set highlight(value: DPlayerHighLightItem[]) {
-    this._highlight = value;
+    this._options.highlight = value;
   }
 
   get highlight(): DPlayerHighLightItem[] {
-    return this._highlight;
+    return this._options.highlight;
   }
 
   /**
@@ -206,63 +213,6 @@ export class DPlayerComponent implements OnInit, OnDestroy {
    * @property {any}
    */
   public MSE: { type: string, instance: any }[] = [];
-  /**
-   * Player Events Reflection
-   * @property {any}
-   */
-  public events = {
-    playerEvents: [
-      'screenshot',
-      'thumbnails_show',
-      'thumbnails_hide',
-      'danmaku_show',
-      'danmaku_hide',
-      'danmaku_clear',
-      'danmaku_loaded',
-      'danmaku_send',
-      'danmaku_opacity',
-      'contextmenu_show',
-      'contextmenu_hide',
-      'notice_show',
-      'notice_hide',
-      'quality_start',
-      'quality_end',
-      'destroy',
-      'resize',
-      'fullscreen',
-      'fullscreen_cancel',
-      'webfullscreen',
-      'webfullscreen_cancel',
-      'subtitle_show',
-      'subtitle_hide',
-      'subtitle_change'
-    ],
-    videoEvents: [
-      'abort',
-      'canplay',
-      'canplaythrough',
-      'durationchange',
-      'emptied',
-      'ended',
-      'error',
-      'loadeddata',
-      'loadedmetadata',
-      'loadstart',
-      'mozaudioavailable',
-      'pause',
-      'play',
-      'playing',
-      'progress',
-      'ratechange',
-      'seeked',
-      'seeking',
-      'stalled',
-      'suspend',
-      'timeupdate',
-      'volumechange',
-      'waiting'
-    ]
-  };
 
   [key: string]: any;
 
@@ -380,24 +330,8 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   }
 
   private initPlayer() {
-    this.DPService.dpOptions = {
-      container: this.ElemRef.nativeElement,
-      autoplay: this.autoplay,
-      live: this.live,
-      theme: this.theme,
-      loop: this.loop,
-      screenshot: this.screenshot,
-      hotkey: this.hotkey,
-      preload: this.preload,
-      volume: this.volume,
-      mutex: this.mutex,
-      video: this.video,
-      subtitle: this.subtitle,
-      danmaku: this.danmaku,
-      contextmenu: this.contextmenu,
-      highlight: this.highlight,
-      apiBackend: this.apiBackend,
-    };
+    this._options.container = this.ElemRef.nativeElement;
+    this.DPService.dpOptions = this._options;
     this.DPService.createPlayer()
       .pipe(
         tap(_dp => {
@@ -418,7 +352,7 @@ export class DPlayerComponent implements OnInit, OnDestroy {
           });
         })
       )
-      .subscribe(_dp => this.PLAYER = _dp, () => console.warn('initialization error'))
+      .subscribe(_dp => this.PLAYER = _dp, () => this.MESSAGE = 'initialization error')
       .unsubscribe();
   }
 

@@ -57,7 +57,7 @@ export class DPlayerService {
   createPlayer(): Observable<DPlayer> {
     return of(this.dpOptions)
       .pipe(
-        switchMap(_o => of(new DPlayer(<DPlayerOptions>_o)))
+        switchMap(_o => of(new DPlayer(_o)))
       )
       .pipe(
         tap(_dp => {
