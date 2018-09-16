@@ -31,7 +31,10 @@ import { DPlayerModule } from 'angular-dplayer';
 
 @NgModule({
   imports: [
-    DPlayerModule
+    // DPlayerModule // Or
+    DPlayerModule.forRoot({ // Global config
+        autoplay: true      // All player can autoplay by default
+    })
   ]
 })
 ```
