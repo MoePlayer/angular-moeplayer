@@ -11,8 +11,22 @@ export class Util {
 
   public static safeSet(obj: any): any {
     Object.keys(obj).forEach(key => {
-      if (typeof obj[key] === 'undefined' || obj[key] === null) {
-        delete obj[key];
+      switch (Object.prototype.toString.call(obj[key])) {
+        case '[object String]':
+        case '[object Array]':
+          if (obj[key].length === 0) {
+            delete obj[key];
+          }
+          break;
+        case '[object Object]':
+          if (Object.keys(obj[key]).length === 0) {
+            delete obj[key];
+          }
+          break;
+        case '[object Undefined]':
+        case '[object Null]':
+          delete obj[key];
+          break;
       }
     });
     return obj;

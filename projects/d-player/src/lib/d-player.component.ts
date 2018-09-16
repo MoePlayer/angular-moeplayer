@@ -338,8 +338,11 @@ export class DPlayerComponent implements OnInit, OnDestroy {
           Object.keys(_dp.events).forEach((item) => {
             if (item !== 'events') {
               _dp.events[item].forEach((event: DPlayerEvents) => {
-                if (this[event]) {
+                if (this[event] && this[event].observers.length) {
                   _dp.on(event, () => this[event].emit());
+                } else {
+                  this[event].unsubscribe();
+                  delete this[event];
                 }
               });
             }
