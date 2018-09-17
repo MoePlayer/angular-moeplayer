@@ -54,12 +54,13 @@ export class DPlayerService {
   constructor(
     @Optional() @Inject('config') private config: any
   ) {
+    Object.freeze(this.config);
   }
 
   createPlayer(): Observable<DPlayer> {
     return of(this.dpOptions)
       .pipe(
-        mergeMap(_o => of(this.config ? Object.assign(this.config, _o) : _o)),
+        mergeMap(_o => of(this.config ? Object.assign({}, this.config, _o) : _o)),
         switchMap(_o => of(new DPlayer(_o)))
       )
       .pipe(
@@ -79,7 +80,10 @@ export class DPlayerService {
         switchMap(_p => of(this._dp.indexOf(_p)))
       )
       .pipe(
-        tap(_i => this._dp.splice(_i, 1)),
+        tap(_i => {
+          this._dp.splice(_i, 1);
+          this._dpOptions.splice(_i, 1);
+        }),
         mapTo(this.pid)
       );
   }
