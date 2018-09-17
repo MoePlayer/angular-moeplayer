@@ -276,44 +276,37 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   private initCustomType() {
     this.MSE.forEach(mse => {
       const instance = mse.instance;
+      const source: any = {
+        type: '',
+        customType: {}
+      };
       switch (mse.type) {
         case 'hls':
-          this.video = Object.assign(this.video, {
-            type: 'dpHls',
-            customType: {
-              'dpHls': (video: HTMLVideoElement) => {
-                instance.loadSource(video.src);
-                instance.attachMedia(video);
-              }
-            }
-          });
+          source.type = 'dpHls';
+          source.customType.dpHls = (video: HTMLVideoElement) => {
+            instance.loadSource(video.src);
+            instance.attachMedia(video);
+          };
           break;
         case 'dash':
-          this.video = Object.assign(this.video, {
-            type: 'dpDash',
-            customType: {
-              'dpDash': (video: HTMLVideoElement) => {
-                instance.initialize(video, video.src);
-              }
-            }
-          });
+          source.type = 'dpDash';
+          source.customType.dpDash = (video: HTMLVideoElement) => {
+            instance.initialize(video, video.src);
+          };
           break;
         case 'flv':
-          this.video = Object.assign(this.video, {
-            type: 'dpFlv',
-            customType: {
-              'dpFlv': (video: HTMLVideoElement) => {
-                instance._mediaDataSource.url = video.src;
-                if (this.live) {
-                  instance._config.isLive = true;
-                }
-                instance.attachMediaElement(video);
-                instance.load();
-              }
+          source.type = 'dpFlv';
+          source.customType.dpFlv = (video: HTMLVideoElement) => {
+            instance._mediaDataSource.url = video.src;
+            if (this.live) {
+              instance._config.isLive = true;
             }
-          });
+            instance.attachMediaElement(video);
+            instance.load();
+          };
           break;
       }
+      Object.assign(this.video, source);
     });
   }
 
