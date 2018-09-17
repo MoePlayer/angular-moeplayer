@@ -312,8 +312,7 @@ export class DPlayerComponent implements OnInit, OnDestroy {
 
   private initPlayer() {
     this._options.container = this.ElemRef.nativeElement;
-    this.DPService.dpOptions = this._options;
-    this.DPService.createPlayer()
+    this.DPService.createPlayer(this._options)
       .pipe(
         tap(_dp => {
           Object.keys(_dp.events).forEach((item) => {

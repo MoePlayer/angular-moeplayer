@@ -21,14 +21,14 @@ export class DPlayerService {
     id: number,
     dp: DPlayer
   }[] = [];
-  public set dp(_p: DPlayer) {
+  private set dp(_p: DPlayer) {
     this._dp.push({
       id: this.pid,
       dp: _p
     });
   }
 
-  public get dp(): DPlayer {
+  private get dp(): DPlayer {
     return this._dp.find(_p => {
       return this.pid === _p.id;
     }).dp;
@@ -38,14 +38,14 @@ export class DPlayerService {
     id: number,
     op: DPlayerOptions
   }[] = [];
-  public set dpOptions(_o: DPlayerOptions) {
+  private set dpOptions(_o: DPlayerOptions) {
     this._dpOptions.push({
       id: ++this.pid,
       op: Util.safeSet(_o)
     });
   }
 
-  public get dpOptions(): DPlayerOptions {
+  private get dpOptions(): DPlayerOptions {
     return this._dpOptions.find(_o => {
       return this.pid === _o.id;
     }).op;
@@ -57,7 +57,8 @@ export class DPlayerService {
     Object.freeze(this.config);
   }
 
-  createPlayer(): Observable<DPlayer> {
+  createPlayer(o: DPlayerOptions): Observable<DPlayer> {
+    this.dpOptions = o;
     return of(this.dpOptions)
       .pipe(
         mergeMap(_o => of(this.config ? Object.assign({}, this.config, _o) : _o)),
@@ -70,7 +71,7 @@ export class DPlayerService {
       );
   }
 
-  destroyPlayer(p?: any): Observable<number> {
+  destroyPlayer(p: DPlayer): Observable<number> {
     return from(this._dp)
       .pipe(
         filter(_p => _p.dp === p)
