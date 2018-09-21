@@ -1,0 +1,91 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+h1 {
+  font-size: 40px;
+  line-height: 64px;
+  font-weight: 500;
+  margin: 0;
+  padding: 24px;
+  color: #fff;
+}
+
+.container {
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-center > * {
+  margin: auto;
+}
+
+.background-sky {
+  background-color: #1976d2;
+  background: linear-gradient(145deg, #0d47a1, #42a5f5);
+  color: #fff;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100%;
+  min-height: 480px;
+  height: 80vh;
+  max-height: 560px;
+  box-sizing: border-box;
+  padding: 48px 48px 32px;
+  overflow: hidden;
+  transform: skewY(8deg);
+  transform-origin: 100%;
+  z-index: -1;
+}
+
+.button {
+  display: inline-block;
+  line-height: 32px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 3px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  border: none;
+  color: #1976d2;
+}
+
+.button:hover {
+  opacity: .9;
+  color: #6e6e6e;
+}
+
+.button.hero-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 184px;
+  height: 40px;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 40px;
+  background-color: #fff;
+  border-radius: 48px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
+  box-sizing: border-box;
+  cursor: pointer;
+  margin-top: 24px;
+}

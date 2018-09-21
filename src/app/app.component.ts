@@ -8,6 +8,12 @@ import { DPlayerService } from 'angular-dplayer';
 })
 export class AppComponent {
   public type: number;
+  public types = [
+    'MP4',
+    'HLS',
+    'DASH',
+    'FLV'
+  ];
   public eventLog = [];
 
   constructor(
@@ -16,15 +22,7 @@ export class AppComponent {
     this.type = 0;
   }
 
-  resize() {
-    this.eventLog.push('resize');
-  }
-
-  canplay() {
-    this.eventLog.push('canplay');
-  }
-
-  changeType(type: number) {
-    this.type = type;
+  changeType() {
+    this.type++;
   }
 }

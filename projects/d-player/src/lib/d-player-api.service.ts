@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { mergeMap, tap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
 
 @Injectable({
@@ -16,12 +16,7 @@ export class DPlayerApiService {
     this.http
       .post(options.url, options.data)
       .pipe(
-        tap((data: any) => {
-          if (data.code !== 0) {
-            throwError(data.msg);
-          }
-        }),
-        mergeMap((data: any) => of(data.data))
+        mergeMap((data: any) => data.code !== 0 ? throwError(data.msg) : of(data.data))
       )
       .subscribe(options.success, options.error);
   }
@@ -30,12 +25,7 @@ export class DPlayerApiService {
     this.http
       .get(options.url)
       .pipe(
-        tap((data: any) => {
-          if (data.code !== 0) {
-            throwError(data.msg);
-          }
-        }),
-        mergeMap((data: any) => of(
+        mergeMap((data: any) => data.code !== 0 ? throwError(data.msg) : of(
           data.data.map((item) => (
             {
               time: item[0],

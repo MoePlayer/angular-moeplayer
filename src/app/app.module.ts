@@ -11,8 +11,10 @@ import { DPlayerModule } from 'angular-dplayer';
   imports: [
     BrowserModule,
     DPlayerModule.forRoot({
-      autoplay: true,
-      screenshot: true
+      screenshot: true,
+      logo: 'favicon.ico',
+      subtitle: {url: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.vtt'},
+      danmaku: {id: 'demo', api: 'https://api.prprpr.me/dplayer3/'}
     })
   ],
   providers: [],

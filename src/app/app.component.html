@@ -1,25 +1,26 @@
-<button (click)="changeType(1)">Hls</button>
-<button (click)="changeType(2)">Dash</button>
-<button (click)="changeType(3)">Flv</button>
-<button (click)="changeType(4)">MP4</button>
-<p *ngFor="let event of eventLog">{{ event }}</p>
-<d-player
-  *ngIf="type === 1"
-  dpHls
-  (resize)="resize()"
-  [video]="{url: 'https://video-dev.github.io/streams/x36xhzz/url_0/193039199_mp4_h264_aac_hd_7.m3u8'}"></d-player>
-<d-player
-  *ngIf="type === 2"
-  dpDash
-  (canplay)="canplay()"
-  [video]="{url: 'https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd'}"></d-player>
-<d-player
-  *ngIf="type === 3"
-  dpFlv
-  [video]="{url: 'https://mister-ben.github.io/videojs-flvjs/bbb.flv'}"></d-player>
-<d-player
-  *ngIf="type === 4"
-  src="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4"
-  poster="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.png"
-  [subtitle]="{url: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.vtt'}"
-  [danmaku]="{id: 'demo', api: 'https://api.prprpr.me/dplayer3/'}"></d-player>
+<div class="container">
+  <h1 class="align-center">Angular-DPlayer ({{ types[type] }})</h1>
+  <div [ngSwitch]="types[type]">
+    <d-player
+      *ngSwitchCase="'MP4'"
+      src="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4"
+      poster="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.png"
+      [danmaku]=""></d-player>
+    <d-player
+      *ngSwitchCase="'HLS'"
+      dpHls
+      [video]="{url: 'https://moeplayer.b0.upaiyun.com/dplayer/hls/hikarunara.m3u8'}"></d-player>
+    <d-player
+      *ngSwitchCase="'DASH'"
+      dpDash
+      [video]="{url: 'https://moeplayer.b0.upaiyun.com/dplayer/dash/hikarunara.mpd'}"></d-player>
+    <d-player
+      *ngSwitchCase="'FLV'"
+      dpFlv
+      [video]="{url: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.flv'}"></d-player>
+  </div>
+  <div class="align-center">
+    <button class="button hero-cta" (click)="changeType()">switch</button>
+  </div>
+</div>
+<div class="background-sky hero"></div>

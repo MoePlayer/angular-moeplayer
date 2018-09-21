@@ -1,5 +1,9 @@
 @import "~dplayer/dist/DPlayer.min.css";
 
+* {
+  outline: none;
+}
+
 body {
   margin: auto;
 }
