@@ -6,27 +6,27 @@ import Hls from 'hls.js';
   selector: '[dpHls]'
 })
 export class HlsDirective implements OnDestroy {
-  private _instance = null;
+  private readonly _instance: Hls = null;
 
   constructor(
     @Host() @Self() @Optional() private _dp: DPlayerComponent
   ) {
     try {
       this._instance = new Hls();
-    } catch (e) {
-      console.warn('hls.js init failed');
+      this._dp.MSE.push(this.init);
+    } finally {
     }
-    this._dp.MSE.push({
-      type: 'hls',
-      instance: this._instance
-    });
   }
 
   ngOnDestroy() {
     try {
       this._instance.destroy();
-    } catch (e) {
-      console.warn('hls.js destroy failed');
+    } finally {
     }
+  }
+
+  private init = (video: HTMLVideoElement) => {
+    this._instance.loadSource(video.src);
+    this._instance.attachMedia(video);
   }
 }

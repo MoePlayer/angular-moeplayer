@@ -12,7 +12,8 @@ import DPlayer, {
   DPlayerVideo,
   Preload
 } from 'dplayer';
-import { tap } from 'rxjs/operators';
+import { mergeMap, switchMap, tap } from 'rxjs/operators';
+import { from, iif, of } from 'rxjs';
 
 @Component({
   selector: 'd-player',
@@ -31,11 +32,11 @@ export class DPlayerComponent implements OnInit, OnDestroy {
    */
   private _options: any = {
     container: null,
-    video: {},
     apiBackend: {
       send: this.APIService.sendDanmaku.bind(this.APIService),
       read: this.APIService.readDanmaku.bind(this.APIService)
-    }
+    },
+    video: {},
   };
 
   /**
@@ -200,7 +201,7 @@ export class DPlayerComponent implements OnInit, OnDestroy {
    * Media Source Extensions
    * @property {any}
    */
-  public MSE: { type: string, instance: any }[] = [];
+  public MSE: any[] = [];
 
   [key: string]: any;
 
@@ -208,7 +209,7 @@ export class DPlayerComponent implements OnInit, OnDestroy {
    * Player Events
    * @property {EventEmitter}
    */
-  @Output() private screenshotChange: EventEmitter<void> = new EventEmitter;
+    // @Output() private screenshotChange: EventEmitter<void> = new EventEmitter;
   @Output() private thumbnails_show: EventEmitter<void> = new EventEmitter;
   @Output() private thumbnails_hide: EventEmitter<void> = new EventEmitter;
   @Output() private danmaku_show: EventEmitter<void> = new EventEmitter;
@@ -247,8 +248,8 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   @Output() private loadedmetadata: EventEmitter<void> = new EventEmitter;
   @Output() private loadstart: EventEmitter<void> = new EventEmitter;
   @Output() private mozaudioavailable: EventEmitter<void> = new EventEmitter;
-  @Output() private pause: EventEmitter<void> = new EventEmitter;
-  @Output() private play: EventEmitter<void> = new EventEmitter;
+  // @Output() private pause: EventEmitter<void> = new EventEmitter;
+  // @Output() private play: EventEmitter<void> = new EventEmitter;
   @Output() private playing: EventEmitter<void> = new EventEmitter;
   @Output() private progress: EventEmitter<void> = new EventEmitter;
   @Output() private ratechange: EventEmitter<void> = new EventEmitter;
@@ -257,8 +258,8 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   @Output() private stalled: EventEmitter<void> = new EventEmitter;
   @Output() private suspend: EventEmitter<void> = new EventEmitter;
   @Output() private timeupdate: EventEmitter<void> = new EventEmitter;
-  @Output() private volumeChange: EventEmitter<void> = new EventEmitter;
-  @Output() private waitin: EventEmitter<void> = new EventEmitter;
+  // @Output() private volumeChange: EventEmitter<void> = new EventEmitter;
+  // @Output() private waitin: EventEmitter<void> = new EventEmitter;
 
   constructor(
     private ElemRef: ElementRef,
@@ -268,75 +269,63 @@ export class DPlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initCustomType();
-    this.initPlayer();
-    this.PID = this.DPService.pid;
+    this.initCustomType()
+      .pipe(
+        mergeMap((mse) => {
+          Object.assign(this.video, mse);
+          return this.initPlayer();
+        })
+      )
+      .subscribe(_dp => this.PLAYER = _dp,
+        () => this.MESSAGE = 'initialization error',
+        () => this.PID = this.DPService.pid)
+      .unsubscribe();
   }
 
   private initCustomType() {
-    this.MSE.forEach(mse => {
-      const instance = mse.instance;
-      const source: any = {
-        type: '',
-        customType: {}
-      };
-      switch (mse.type) {
-        case 'hls':
-          source.type = 'dpHls';
-          source.customType.dpHls = (video: HTMLVideoElement) => {
-            instance.loadSource(video.src);
-            instance.attachMedia(video);
-          };
-          break;
-        case 'dash':
-          source.type = 'dpDash';
-          source.customType.dpDash = (video: HTMLVideoElement) => {
-            instance.initialize(video, video.src);
-          };
-          break;
-        case 'flv':
-          source.type = 'dpFlv';
-          source.customType.dpFlv = (video: HTMLVideoElement) => {
-            instance._mediaDataSource.url = video.src;
-            if (this.live) {
-              instance._config.isLive = true;
+    return iif(
+      () => this.MSE.length > 0,
+      from(this.MSE)
+        .pipe(
+          switchMap(mse => of({
+            type: 'MSE',
+            customType: {
+              MSE: mse
             }
-            instance.attachMediaElement(video);
-            instance.load();
-          };
-          break;
-      }
-      Object.assign(this.video, source);
-    });
+          }))
+        ),
+      of({})
+    );
   }
 
   private initPlayer() {
     this._options.container = this.ElemRef.nativeElement;
-    this.DPService.createPlayer(this._options)
-      .pipe(
-        tap(_dp => {
-          Object.keys(_dp.events).forEach((item) => {
-            if (item !== 'events') {
-              _dp.events[item].forEach((event: DPlayerEvents) => {
-                if (this[event] && this[event].observers.length) {
-                  _dp.on(event, () => this[event].emit());
-                } else {
-                  this[event].unsubscribe();
-                  delete this[event];
-                }
-              });
-            }
+    return this.DPService.createPlayer(this._options)
+      .pipe(tap((_dp) => {
+        Object.keys(_dp.events).forEach((item) => {
+          if (item !== 'events') {
+            _dp.events[item].forEach((event: DPlayerEvents) => {
+              if (this[event] && this[event].observers.length > 0) {
+                _dp.on(event, () => this[event].emit());
+              } else if (this[event] && this[event].unsubscribe) {
+                this[event].unsubscribe();
+                delete this[event];
+              }
+            });
+          }
+        });
+        Object.getOwnPropertyNames(_dp).forEach(key => {
+          Object.defineProperty(this, key, {
+            value: _dp[key]
           });
-          const _proto = Object.assign(Object.getPrototypeOf(this), Object.getPrototypeOf(_dp));
-          _proto.play = _dp.play.bind(_dp);
-          Object.setPrototypeOf(this, _proto);
-          Object.keys(_dp).forEach(key => {
-            this[key] = _dp[key];
+        });
+        _dp.play = _dp.play.bind(_dp);
+        Object.getOwnPropertyNames(Object.getPrototypeOf(_dp)).forEach(key => {
+          Object.defineProperty(Object.getPrototypeOf(this), key, {
+            value: _dp[key]
           });
-        })
-      )
-      .subscribe(_dp => this.PLAYER = _dp, () => this.MESSAGE = 'initialization error')
-      .unsubscribe();
+        });
+      }));
   }
 
   ngOnDestroy() {

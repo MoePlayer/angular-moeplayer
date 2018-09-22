@@ -6,28 +6,32 @@ import flvjs from 'flv.js';
   selector: '[dpFlv]'
 })
 export class FlvDirective implements OnDestroy {
-  private _instance = null;
+  private readonly _instance: any = null;
 
   constructor(
     @Host() @Self() @Optional() private _dp: DPlayerComponent
   ) {
-    flvjs.LoggingControl.enableAll = false;
     try {
-      this._instance = flvjs.createPlayer({type: 'flv'});
-    } catch (e) {
-      console.warn('flv.js init failed');
+      flvjs.LoggingControl.enableAll = false;
+      this._instance = flvjs.createPlayer({
+        type: 'flv',
+        isLive: this._dp.live
+      });
+      this._dp.MSE.push(this.init);
+    } finally {
     }
-    this._dp.MSE.push({
-      type: 'flv',
-      instance: this._instance
-    });
   }
 
   ngOnDestroy() {
     try {
       this._instance.destroy();
-    } catch (e) {
-      console.warn('flv.js destroy failed');
+    } finally {
     }
+  }
+
+  private init = (video: HTMLVideoElement) => {
+    this._instance._mediaDataSource.url = video.src;
+    this._instance.attachMediaElement(video);
+    this._instance.load();
   }
 }
