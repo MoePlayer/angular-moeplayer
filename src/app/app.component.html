@@ -3,9 +3,7 @@
   <div [ngSwitch]="types[type]">
     <d-player
       *ngSwitchCase="'MP4'"
-      src="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4"
-      poster="https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.png"
-      [danmaku]=""></d-player>
+      [video]="{url: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4', pic: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.png'}"></d-player>
     <d-player
       *ngSwitchCase="'HLS'"
       dpHls

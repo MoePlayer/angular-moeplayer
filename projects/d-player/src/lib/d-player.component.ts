@@ -316,12 +316,18 @@ export class DPlayerComponent implements OnInit, OnDestroy {
         });
         Object.getOwnPropertyNames(_dp).forEach(key => {
           Object.defineProperty(this, key, {
+            configurable: true,
+            enumerable: false,
+            writable: true,
             value: _dp[key]
           });
         });
         _dp.play = _dp.play.bind(_dp);
         Object.getOwnPropertyNames(Object.getPrototypeOf(_dp)).forEach(key => {
           Object.defineProperty(Object.getPrototypeOf(this), key, {
+            configurable: true,
+            enumerable: false,
+            writable: true,
             value: _dp[key]
           });
         });

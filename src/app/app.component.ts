@@ -23,6 +23,10 @@ export class AppComponent {
   }
 
   changeType() {
-    this.type++;
+    if (this.type >= this.types.length - 1) {
+      this.type = 0;
+    } else {
+      this.type++;
+    }
   }
 }
