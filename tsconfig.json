@@ -24,6 +24,12 @@
       ],
       "d-player/*": [
         "dist/d-player/*"
+      ],
+      "a-player": [
+        "dist/a-player"
+      ],
+      "a-player/*": [
+        "dist/a-player/*"
       ]
     }
   }

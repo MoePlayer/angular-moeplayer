@@ -161,6 +161,46 @@
           }
         }
       }
+    },
+    "a-player": {
+      "root": "projects/a-player",
+      "sourceRoot": "projects/a-player/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/a-player/tsconfig.lib.json",
+            "project": "projects/a-player/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/a-player/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/a-player/src/test.ts",
+            "tsConfig": "projects/a-player/tsconfig.spec.json",
+            "karmaConfig": "projects/a-player/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/a-player/tsconfig.lib.json",
+              "projects/a-player/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "angular-moeplayer"
