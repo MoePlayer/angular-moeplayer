@@ -24,19 +24,19 @@
   "homepage": "https://github.com/MoePlayer/angular-moeplayer",
   "license": "MIT",
   "dependencies": {
-    "@types/dplayer": "^1.24.0",
-    "@types/hls.js": "^0.10.1",
-    "dashjs": "^2.9.0",
-    "dplayer": "^1.24.0",
+    "dashjs": "^2.9.2",
+    "dplayer": "^1.25.0",
     "flv.js": "^1.4.2",
     "hls.js": "^0.11.0"
   },
   "peerDependencies": {
-    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
-    "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
-    "@angular/http": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0",
+    "@angular/http": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0",
     "rxjs": "^6.0.0"
   },
   "devDependencies": {
+    "@types/dplayer": "^1.24.0",
+    "@types/hls.js": "^0.10.1"
   }
 }
