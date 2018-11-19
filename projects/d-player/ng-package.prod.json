@@ -2,7 +2,13 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/d-player",
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "dplayer": "DPlayer",
+      "hls.js": "Hls",
+      "dashjs": "dashjs",
+      "flv.js": "flvjs"
+    }
   },
   "whitelistedNonPeerDependencies": ["."]
 }

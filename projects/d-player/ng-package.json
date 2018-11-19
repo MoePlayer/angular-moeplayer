@@ -3,7 +3,13 @@
   "dest": "../../dist/d-player",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "dplayer": "DPlayer",
+      "hls.js": "Hls",
+      "dashjs": "dashjs",
+      "flv.js": "flvjs"
+    }
   },
   "whitelistedNonPeerDependencies": ["."]
 }
