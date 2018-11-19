@@ -1,8 +1,34 @@
 {
-  "name": "a-player",
-  "version": "0.0.1",
+  "name": "angular-aplayer",
+  "version": "1.0.0",
+  "private": false,
+  "description": "APlayer for Angular",
+  "keywords": [
+    "angular",
+    "typescript",
+    "component",
+    "player"
+  ],
+  "author": {
+    "name": "Guanyunhan",
+    "email": "guanyinhang@gmail.com",
+    "url": "https://1996.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoePlayer/angular-moeplayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MoePlayer/angular-moeplayer/issues"
+  },
+  "homepage": "https://github.com/MoePlayer/angular-moeplayer",
+  "license": "MIT",
+  "dependencies": {
+    "aplayer": "^1.10.1"
+  },
   "peerDependencies": {
-    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
-    "@angular/core": "^6.0.0-rc.0 || ^6.0.0"
-  }
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0 || ^7.0.0"
+  },
+  "devDependencies": {}
 }
